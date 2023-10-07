@@ -13,6 +13,7 @@ namespace RMWPFUserInterface.ViewModels
         private readonly IAPIHelper _apiHelper;
         private string _userName;
         private string _password;
+        private string _errorMessage;
 
 
         public LoginViewModel(IAPIHelper apiHelper)
@@ -20,7 +21,9 @@ namespace RMWPFUserInterface.ViewModels
             _apiHelper = apiHelper;
         }
 
-        public string UserName
+		#region Properties
+
+		public string UserName
 		{
 			get { return _userName; }
 			set 
@@ -42,6 +45,34 @@ namespace RMWPFUserInterface.ViewModels
 			}
 		}
 
+		public bool IsErrorVisible
+		{
+			get 
+			{
+				bool output = false;
+
+				if (ErrorMessage?.Length > 0)
+				{
+					output = true;
+				}
+
+				return output;
+			}
+		}
+
+
+		public string ErrorMessage
+        {
+			get { return _errorMessage; }
+			set 
+			{ 
+				_errorMessage = value; 
+				NotifyOfPropertyChange(() => ErrorMessage);
+				NotifyOfPropertyChange(() => IsErrorVisible);
+			}
+		}
+
+
 		public bool CanLogIn
 		{
 			get
@@ -55,9 +86,22 @@ namespace RMWPFUserInterface.ViewModels
 			}
 		}
 
-		public async Task LogIn()
+        #endregion
+
+
+        public async Task LogIn()
 		{
-            var result = await _apiHelper.Authenticate(UserName, Password);
+			try
+			{
+				ErrorMessage = string.Empty;
+				var result = await _apiHelper.Authenticate(UserName, Password);
+
+			}
+			catch (Exception ex)
+			{
+
+				ErrorMessage = ex.Message;
+            }
         }
 
 
