@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RMWPFUserInterface.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,15 @@ namespace RMWPFUserInterface.ViewModels
 {
     public class LoginViewModel : Screen
     {
-		private string _userName;
+        private readonly IAPIHelper _apiHelper;
+        private string _userName;
         private string _password;
 
+
+        public LoginViewModel(IAPIHelper apiHelper)
+        {
+            _apiHelper = apiHelper;
+        }
 
         public string UserName
 		{
@@ -48,9 +55,9 @@ namespace RMWPFUserInterface.ViewModels
 			}
 		}
 
-		public void LogIn(string userName, string password)
+		public async Task LogIn()
 		{
-            Console.WriteLine();
+            var result = await _apiHelper.Authenticate(UserName, Password);
         }
 
 
