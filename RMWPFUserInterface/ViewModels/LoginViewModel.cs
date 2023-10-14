@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using RMDesktopUI.Library.Api;
 using RMWPFUserInterface.Helpers;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,10 @@ namespace RMWPFUserInterface.ViewModels
 			{
 				ErrorMessage = string.Empty;
 				var result = await _apiHelper.Authenticate(UserName, Password);
+
+				// Capture more information about the logged in user.
+				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
+
 
 			}
 			catch (Exception ex)
