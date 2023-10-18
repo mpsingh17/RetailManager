@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.Library.Api;
+using RMWPFUserInterface.EventModels;
 using RMWPFUserInterface.Helpers;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,16 @@ namespace RMWPFUserInterface.ViewModels
     public class LoginViewModel : Screen
     {
         private readonly IAPIHelper _apiHelper;
+        private readonly IEventAggregator _events;
         private string _userName;
         private string _password;
         private string _errorMessage;
 
 
-        public LoginViewModel(IAPIHelper apiHelper)
+        public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)
         {
             _apiHelper = apiHelper;
+            _events = events;
         }
 
 		#region Properties
@@ -100,6 +103,7 @@ namespace RMWPFUserInterface.ViewModels
 				// Capture more information about the logged in user.
 				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
 
+				await _events.PublishOnUIThreadAsync(new LogOnEvent());
 
 			}
 			catch (Exception ex)
